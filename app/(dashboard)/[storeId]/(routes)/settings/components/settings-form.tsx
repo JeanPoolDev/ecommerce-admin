@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
 
 interface SettingsFormProps {
   initialData: Store;
@@ -60,12 +61,27 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
     }
   };
 
+  const onDelete = async () => {
+    try{
+      setLoading(true);
+      await axios.delete(`/api/stores/${params.storeId}`)
+      router.refresh();
+      router.push("/")
+      toast.success("Tienda Eliminada.")
+    } catch(error){
+      toast.error("Asegúrese de eliminar todos los productos y categorías primero")
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  }
+
   return(
     <>
     <AlertModal 
       isOpen={open}
       onClose={() => setOpen(false)}
-      onConfirm={() => {}}
+      onConfirm={onDelete}
       loading={loading}
     
     />
@@ -106,6 +122,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
           </Button>
         </form>
     </Form>
+    <Separator />
+    <ApiAlert 
+      title="NEXT_PUBLIC_API_URL" 
+      description={`${origin}/api/${params.storeId}`}
+      variant="public"
+    />
     </>
   );
 };
