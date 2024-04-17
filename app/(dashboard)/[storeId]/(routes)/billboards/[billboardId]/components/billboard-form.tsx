@@ -79,11 +79,10 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onDelete = async () => {
     try{
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/billboards/
-      ${params.billboardId}`)
-      router.refresh();
-      router.push("/")
+      await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
+      router.push(`/${params.storeId}/billboards`)
       toast.success("Banner Eliminado")
+      router.refresh();
     } catch(error){
       toast.error("Asegúrese de eliminar todos los banner primero")
     } finally {
@@ -99,7 +98,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
       onClose={() => setOpen(false)}
       onConfirm={onDelete}
       loading={loading}
-    
     />
     <div className="flex items-center justify-between">
       <Heading 
