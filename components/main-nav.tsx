@@ -29,6 +29,11 @@ export function MainNav({
       active: pathname === `/${params.storeId}/billboards`,
     },
     {
+      href: `/${params.storeId}/marcas`,
+      label: 'Marcas',
+      active: pathname === `/${params.storeId}/marcas`,
+    },
+    {
       href: `/${params.storeId}/settings`,
       label: 'Ajustes',
       active: pathname === `/${params.storeId}/settings`,
