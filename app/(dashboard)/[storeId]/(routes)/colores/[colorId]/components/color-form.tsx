@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { useState } from "react";
-import { Marca } from "@prisma/client";
+import { Color } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,16 +31,18 @@ import {
 
 const formSchema = z.object({
   nombre: z.string().min(1),
-  valor: z.string().min(1),
+  valor: z.string().min(4).regex(/^#/,{
+    message: 'La cadena debe ser un código hexadecimal válido',
+  }),
 });
 
-type MarcaFormValues = z.infer<typeof formSchema>;
+type ColorFormValues = z.infer<typeof formSchema>;
 
-interface MarcaFormProps {
-  initialData: Marca | null;
+interface ColorFormProps {
+  initialData: Color | null;
 }
 
-export const MarcaForm: React.FC<MarcaFormProps> = ({
+export const ColorForm: React.FC<ColorFormProps> = ({
   initialData,
 }) => {
   const params = useParams();
@@ -49,12 +51,12 @@ export const MarcaForm: React.FC<MarcaFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Editar Marcas" : "Crear una Marca";
-  const description = initialData ? "Editar una Marca" : "Agregar una nueva Marca";
-  const toastMessage = initialData ? "Marca Actulizada" : "Marca Creada";
+  const title = initialData ? "Editar Color" : "Crear un Color";
+  const description = initialData ? "Editar un Color" : "Agregar una nuevo Color";
+  const toastMessage = initialData ? "Color Actualizado" : "Color Creado";
   const action = initialData ? "Guardar Cambios" : "Crear";
 
-  const form = useForm<MarcaFormValues>({
+  const form = useForm<ColorFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       nombre: '',
@@ -62,15 +64,15 @@ export const MarcaForm: React.FC<MarcaFormProps> = ({
     }
   });
 
-  const onSumit = async (data: MarcaFormValues) => {
+  const onSumit = async (data: ColorFormValues) => {
     try{
       setLoading(true);
       if(initialData){
-        await axios.patch(`/api/${params.storeId}/marcas/${params.marcaId}`, data);
+        await axios.patch(`/api/${params.storeId}/colores/${params.colorId}`, data);
       }else{
-        await axios.post(`/api/${params.storeId}/marcas`, data);
+        await axios.post(`/api/${params.storeId}/colores`, data);
       }
-      router.push(`/${params.storeId}/marcas`)
+      router.push(`/${params.storeId}/colores`)
       toast.success(toastMessage);
       router.refresh();
     } catch(error){
@@ -83,12 +85,12 @@ export const MarcaForm: React.FC<MarcaFormProps> = ({
   const onDelete = async () => {
     try{
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/marcas/${params.marcaId}`)
-      router.push(`/${params.storeId}/marcas`)
-      toast.success("Marca Eliminada")
+      await axios.delete(`/api/${params.storeId}/colores/${params.colorId}`)
+      router.push(`/${params.storeId}/colores`)
+      toast.success("Color Eliminado")
       router.refresh();
     } catch(error){
-      toast.error("Asegúrese de eliminar todos las Marcas primero")
+      toast.error("Asegúrese de eliminar todos los colores primero")
     } finally {
       setLoading(false);
       setOpen(false);
@@ -129,9 +131,9 @@ export const MarcaForm: React.FC<MarcaFormProps> = ({
               name="nombre"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nombre de Marca: </FormLabel>
+                  <FormLabel>Nombre de Color: </FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Nombre de Marca.." {...field}/>
+                    <Input disabled={loading} placeholder="Nombre del Color.." {...field}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -143,9 +145,15 @@ export const MarcaForm: React.FC<MarcaFormProps> = ({
               name="valor"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Acronimo de Marca:</FormLabel>
+                  <FormLabel>Color Hexagecimal: </FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Nombre de Marca.." {...field}/>
+                    <div className="flex items-center gap-x-4">
+                      <Input type="color" disabled={loading} {...field}/> 
+                      <div
+                        className="border p-4 rounded-full"
+                        style={{ backgroundColor: field.value }}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

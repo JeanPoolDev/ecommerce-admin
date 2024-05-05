@@ -5,24 +5,24 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET (
   req: Request,
-  { params } : { params: { marcaId: string } }
+  { params } : { params: { colorId: string } }
 ) {
   try {
 
-    if( !params.marcaId ) {
-      return new NextResponse("Id de la marca es requerido", { status: 400});
+    if( !params.colorId ) {
+      return new NextResponse("Id del color es requerido", { status: 400});
     }
 
-    const marca = await prismadb.marca.findUnique({
+    const color = await prismadb.color.findUnique({
       where: {
-        id: params.marcaId,
+        id: params.colorId,
       }
     });
 
-    return NextResponse.json(marca);
+    return NextResponse.json(color);
 
   } catch (error) {
-    console.log('[MARCA_GET]', error);
+    console.log('[COLOR_GET]', error);
     return new NextResponse("Error Interno", {status: 500});
   }
 };
@@ -30,7 +30,7 @@ export async function GET (
 
 export async function PATCH (
   req: Request,
-  { params } : { params: { storeId: string, marcaId: string } }
+  { params } : { params: { storeId: string, colorId: string } }
 ) {
   try {
     const {userId} = auth();
@@ -50,8 +50,8 @@ export async function PATCH (
       return new NextResponse("El valor es requerido", { status: 400 });
     }
 
-    if( !params.marcaId ) {
-      return new NextResponse("Id de la marca es requerido", { status: 400});
+    if( !params.colorId ) {
+      return new NextResponse("Id del color es requerido", { status: 400});
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -65,9 +65,9 @@ export async function PATCH (
       return new NextResponse("Inautorizado", { status: 403 });
     }
 
-    const marca = await prismadb.marca.updateMany({
+    const color = await prismadb.color.updateMany({
       where: {
-        id: params.marcaId,
+        id: params.colorId,
       },
       data: {
         nombre,
@@ -75,10 +75,10 @@ export async function PATCH (
       }
     });
 
-    return NextResponse.json(marca);
+    return NextResponse.json(color);
 
   } catch (error) {
-    console.log('[MARCA_PATCH]', error);
+    console.log('[COLOR_PATCH]', error);
     return new NextResponse("Error Interno", {status: 500});
   }
 };
@@ -86,7 +86,7 @@ export async function PATCH (
 
 export async function DELETE (
   req: Request,
-  { params } : { params: { storeId: string, marcaId: string } }
+  { params } : { params: { storeId: string, colorId: string } }
 ) {
   try {
     const {userId} = auth();
@@ -95,8 +95,8 @@ export async function DELETE (
       return new NextResponse("No autenticado", { status: 401 });
     }
 
-    if( !params.marcaId ) {
-      return new NextResponse("Id de la marca es requerido", { status: 400});
+    if( !params.colorId ) {
+      return new NextResponse("Id del color es requerido", { status: 400});
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -110,16 +110,16 @@ export async function DELETE (
       return new NextResponse("Inautorizado", { status: 403 });
     }
 
-    const marca = await prismadb.marca.deleteMany({
+    const color = await prismadb.color.deleteMany({
       where: {
-        id: params.marcaId,
+        id: params.colorId,
       }
     });
 
-    return NextResponse.json(marca);
+    return NextResponse.json(color);
 
   } catch (error) {
-    console.log('[MARCA_DELETE]', error);
+    console.log('[COLOR_DELETE]', error);
     return new NextResponse("Error Interno", {status: 500});
   }
 };

@@ -1,16 +1,16 @@
 import { format } from "date-fns";
 import prismadb from "@/lib/prismadb";
 
-import { MarcasClient } from "./components/client";
-import { MarcaColumn } from "./components/columns";
+import { ColorsClient } from "./components/client";
+import { ColorColumn } from "./components/columns";
 
-const MarcasPage = async ({
+const ColoresPage = async ({
   params
 }: {
   params: { storeId: string }
 }) => {
 
-  const marcas = await prismadb.marca.findMany({
+  const colores = await prismadb.color.findMany({
     where: {
       tiendaId: params.storeId
     },
@@ -19,7 +19,7 @@ const MarcasPage = async ({
     }
   });
 
-  const formattedMarcas: MarcaColumn[] = marcas.map((item) => ({
+  const formateedColores: ColorColumn[] = colores.map((item) => ({
     id: item.id,
     nombre: item.nombre,
     valor: item.valor,
@@ -29,10 +29,10 @@ const MarcasPage = async ({
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-8">
-        <MarcasClient data={formattedMarcas}/>
+        <ColorsClient data={formateedColores}/>
       </div>
     </div>
    );
 }
  
-export default MarcasPage;
+export default ColoresPage;

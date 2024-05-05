@@ -47,8 +47,8 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 
   const title = initialData ? "Editar Banner" : "Crear Banner";
   const description = initialData ? "Editar un Banner" : "Agregar un nuevo Banner";
-  const toastMessage = initialData ? "Actualizar Banner" : "Crear Banner";
-  const action = initialData ? "Guardar Cambios" : "Crear";
+  const toastMessage = initialData ? "Actualizar Banner" : "Banner Creado";
+  const action = initialData ? "Guardar Cambios" : "Crear ";
 
   const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
