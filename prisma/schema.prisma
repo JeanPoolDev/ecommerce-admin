@@ -23,6 +23,7 @@ model Store {
   color      Color[]      @relation("StoreToColor")
   dimension  Dimension[]  @relation("StoreToDimension")
   producto   Producto[]   @relation("StoreToProducto")
+  pedido     Pedido[]     @relation("StoreToPedido")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -111,6 +112,7 @@ model Producto{
   dimensionId    String
   dimension      Dimension @relation(fields: [dimensionId], references: [id])
   imagenes       Imagen[]
+  ordenPedido    OrdenPedido[]
   creadoEn       DateTime @default(now())
   actualizadoEn  DateTime @updatedAt
 
@@ -129,5 +131,30 @@ model Imagen{
   creadoEn       DateTime @default(now())
   actualizadoEn  DateTime @updatedAt
 
+  @@index([productoId])
+}
+
+model Pedido {
+  id          String @id @default(uuid())
+  tiendaId    String
+  tienda      Store @relation("StoreToPedido", fields: [tiendaId], references: [id])
+  ordenPedidos OrdenPedido[]
+  pagado      Boolean @default(false)
+  telefono    String @default("")
+  direccion   String @default("")
+  creadoEn       DateTime @default(now())
+  actualizadoEn  DateTime @updatedAt
+
+  @@index([tiendaId])   
+}
+
+model OrdenPedido {
+  id String @id @default(uuid())
+  pedidoId String
+  pedido   Pedido @relation(fields: [pedidoId], references: [id])
+  productoId  String
+  producto Producto @relation(fields: [productoId], references: [id])
+
+  @@index([pedidoId])
   @@index([productoId])
 }
