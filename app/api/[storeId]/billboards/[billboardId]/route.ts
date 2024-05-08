@@ -13,7 +13,7 @@ export async function GET (
       return new NextResponse("Id de tienda es requerido", { status: 400});
     }
 
-    const billboard = await prismadb.billbord.deleteMany({
+    const billboard = await prismadb.billbord.findUnique({
       where: {
         id: params.billboardId,
       }

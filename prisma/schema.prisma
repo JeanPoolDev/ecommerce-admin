@@ -22,6 +22,7 @@ model Store {
   marca      Marca[]      @relation("StoreToMarca")
   color      Color[]      @relation("StoreToColor")
   dimension  Dimension[]  @relation("StoreToDimension")
+  producto   Producto[]   @relation("StoreToProducto")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -45,6 +46,7 @@ model Category {
   store       Store @relation("StoreToCategory", fields: [storeId], references: [id])
   billboardId String
   billboard   Billbord @relation(fields: [billboardId], references: [id])
+  productos   Producto[] @relation("CategoryToProducto")
   name String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -59,6 +61,7 @@ model Marca{
    tienda        Store    @relation("StoreToMarca", fields: [tiendaId], references: [id])
    nombre        String
    valor         String
+   productos     Producto[]
    creadoEn      DateTime @default(now())
    actualizadoEn  DateTime @updatedAt 
 
@@ -71,6 +74,7 @@ model Color{
    tienda        Store    @relation("StoreToColor", fields: [tiendaId], references: [id])
    nombre        String
    valor         String
+   productos     Producto[]
    creadoEn      DateTime @default(now())
    actualizadoEn  DateTime @updatedAt 
 
@@ -83,8 +87,47 @@ model Dimension{
    tienda        Store    @relation("StoreToDimension", fields: [tiendaId], references: [id])
    nombre        String
    valor         String
+   productos     Producto[]
    creadoEn      DateTime @default(now())
    actualizadoEn  DateTime @updatedAt 
 
    @@index([tiendaId])
+}
+
+model Producto{
+  id             String @id @default(uuid())
+  tiendaId       String 
+  tienda         Store @relation("StoreToProducto", fields: [tiendaId], references: [id])
+  categoriaId    String
+  categoria      Category @relation("CategoryToProducto", fields: [categoriaId], references: [id])
+  nombre         String
+  precio         Decimal
+  esDestacado    Boolean @default(false)
+  esArchivado    Boolean @default(false)
+  marcaId        String
+  marca          Marca @relation(fields: [marcaId], references: [id])
+  colorId        String
+  color          Color @relation(fields: [colorId], references: [id])
+  dimensionId    String
+  dimension      Dimension @relation(fields: [dimensionId], references: [id])
+  imagenes       Imagen[]
+  creadoEn       DateTime @default(now())
+  actualizadoEn  DateTime @updatedAt
+
+  @@index([tiendaId])
+  @@index([categoriaId])
+  @@index([marcaId])
+  @@index([colorId])
+  @@index([dimensionId])
+}
+
+model Imagen{
+  id            String @id @default(uuid())
+  productoId    String
+  producto      Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  url           String 
+  creadoEn       DateTime @default(now())
+  actualizadoEn  DateTime @updatedAt
+
+  @@index([productoId])
 }
