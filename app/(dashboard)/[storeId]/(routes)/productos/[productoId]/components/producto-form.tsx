@@ -67,7 +67,7 @@ export const ProductoForm: React.FC<ProductoFormProps> = ({
 
   const title = initialData ? "Editar Producto" : "Crear Producto";
   const description = initialData ? "Editar un Producto" : "Agregar un nuevo Producto";
-  const toastMessage = initialData ? "Actualizar Producto" : "Producto Creado";
+  const toastMessage = initialData ? "Producto Actulizado" : "Producto Creado";
   const action = initialData ? "Guardar Cambios" : "Crear ";
 
   const form = useForm<ProductoFormValues>({
